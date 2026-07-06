@@ -52,12 +52,41 @@ class QureshiAIEngine {
                 data.close
             );
 
-        result.score = 0;
+        let score = 0;
 
-        result.signal = "WAIT";
+if (result.indicators.rsi && result.indicators.rsi < 30) {
+    score += 20;
+}
 
-        result.confidence = 0;
+if (result.indicators.macd && result.indicators.macd.macd > result.indicators.macd.signal) {
+    score += 20;
+}
 
+if (result.indicators.cci && result.indicators.cci.cci > 100) {
+    score += 15;
+}
+
+if (result.indicators.stochastic && result.indicators.stochastic.k < 20) {
+    score += 15;
+}
+
+result.score = score;
+
+result.confidence = Math.min(score, 100);
+
+if (score >= 70) {
+
+    result.signal = "BUY";
+
+} else if (score <= 30) {
+
+    result.signal = "SELL";
+
+} else {
+
+    result.signal = "WAIT";
+
+}
         return result;
 
     }
