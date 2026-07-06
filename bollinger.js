@@ -11,10 +11,24 @@ class BollingerEngine {
             return null;
         }
 
+        const data = prices.slice(-this.period);
+
+        const mean =
+            data.reduce((a, b) => a + b, 0) / this.period;
+
+        const variance =
+            data.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / this.period;
+
+        const std = Math.sqrt(variance);
+
         return {
-            upper: 0,
-            middle: 0,
-            lower: 0
+
+            upper: Number((mean + this.deviation * std).toFixed(5)),
+
+            middle: Number(mean.toFixed(5)),
+
+            lower: Number((mean - this.deviation * std).toFixed(5))
+
         };
 
     }
